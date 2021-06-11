@@ -1,0 +1,78 @@
+<!-- Pixelarter by Axel Fiolle (Andaroth) -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pixelarter</title>
+  </head>
+  <body>
+    <div class="container">Loading...</div>
+    <script>
+      var htmlTags = []
+      var pixelStep = 30;
+      const computeColorPalet = async (img) => {
+        if (!img) return;
+        // console.log('computeColorPalet', img);
+        img.crossOrigin = "Anonymous";
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+        const arr = [];
+        // console.log('will loop', img.width, img.height, pixelStep);
+        for (let h = 1; h <= img.height; h += pixelStep) {
+          for (let w = 1; w <= img.width; w += pixelStep) {
+            const pixelData = canvas.getContext('2d').getImageData(w, h, 1, 1).data;
+            const color = { 
+              r: pixelData[0],
+              g: pixelData[1],
+              b: pixelData[2] 
+            }
+            // console.log('pixelData', pixelData, color);
+            arr.push(color)
+          }
+        }
+        return arr;
+      }
+      const makeHtmlTags = function(palet, image) {
+        if (!palet || !image) return;
+        // console.log('makeHtmlTags', palet);
+        const container = document.querySelector('div.container');
+        container.style.maxWidth = (image.width / 5) + 'px';
+        container.innerHTML = "";
+        palet.map(color => {
+          // console.log('palet.map', color)
+          const div = document.createElement('div')
+          const index = palet.indexOf(color);
+          div.style.float = (pixelStep * (index + 1)) % (image.width / 5) === 0 ? "initial" : "left";
+          div.style.display = "block";
+          div.style.height = "2px";
+          div.style.width = "2px";
+          div.style.backgroundColor = `rgb(${color.r},${color.g},${color.b})`;
+          container.appendChild(div);
+        });
+        setTimeout(() => {
+          const img = document.querySelector('#scanMe');
+          img && img.remove();
+        }, 2000);
+      }
+      const readImg = async (src) => {
+        if (!src) return;
+        // console.log('readImg', src);
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.opacity = "0";
+        img.id = "scanMe"
+        document.body.appendChild(img);
+        const domImg = document.querySelector('#scanMe');
+        domImg.onload = (loaded) => {
+          computeColorPalet(loaded.target).then(palet => makeHtmlTags(palet,loaded.target));
+        }
+      }
+      const init = () => {
+        // console.log('init')
+        readImg('https://upload.wikimedia.org/wikipedia/commons/f/ff/Dali_Allan_Warren.jpg');
+      }
+      init();
+    </script>
+  </body>
+</html>
