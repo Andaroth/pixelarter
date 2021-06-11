@@ -5,6 +5,7 @@
     <title>Pixelarter</title>
   </head>
   <body>
+    <img id="original" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/1920px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg" alt="original" height="80" />
     <div class="container">Loading...</div>
     <script>
       var htmlTags = []
@@ -50,27 +51,11 @@
           div.style.backgroundColor = `rgb(${color.r},${color.g},${color.b})`;
           container.appendChild(div);
         });
-        setTimeout(() => {
-          const img = document.querySelector('#scanMe');
-          img && img.remove();
-        }, 2000);
-      }
-      const readImg = async (src) => {
-        if (!src) return;
-        // console.log('readImg', src);
-        const img = document.createElement('img');
-        img.src = src;
-        img.style.opacity = "0";
-        img.id = "scanMe"
-        document.body.appendChild(img);
-        const domImg = document.querySelector('#scanMe');
-        domImg.onload = (loaded) => {
-          computeColorPalet(loaded.target).then(palet => makeHtmlTags(palet,loaded.target));
-        }
       }
       const init = () => {
         // console.log('init')
-        readImg('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/1920px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg');
+        const url = document.querySelector('img#original').src;
+        readImg(url);
       }
       init();
     </script>
