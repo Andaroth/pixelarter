@@ -38,19 +38,32 @@
         if (!palet || !image) return;
         // console.log('makeHtmlTags', palet);
         const container = document.querySelector('div.container');
-        container.style.maxWidth = (image.width / 5) + 'px';
+        container.style.maxWidth = image.width + 'px';
         container.innerHTML = "";
         palet.map(color => {
           // console.log('palet.map', color)
           const div = document.createElement('div')
           const index = palet.indexOf(color);
-          div.style.float = (pixelStep * (index + 1)) % (image.width / 5) === 0 ? "initial" : "left";
+          div.style.float = (pixelStep * (index + 1)) % image.width === 0 ? "initial" : "left";
           div.style.display = "block";
           div.style.height = "2px";
           div.style.width = "2px";
           div.style.backgroundColor = `rgb(${color.r},${color.g},${color.b})`;
           container.appendChild(div);
         });
+      }
+      const readImg = async (src) => {
+        if (!src) return;
+        // console.log('readImg', src);
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.opacity = "0";
+        img.id = "scanMe"
+        document.body.appendChild(img);
+        const domImg = document.querySelector('#scanMe');
+        domImg.onload = (loaded) => {
+          computeColorPalet(loaded.target).then(palet => makeHtmlTags(palet,loaded.target));
+        }
       }
       const init = () => {
         // console.log('init')
