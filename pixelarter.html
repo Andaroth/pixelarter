@@ -5,8 +5,10 @@
     <title>Pixelarter</title>
   </head>
   <body>
-    <img id="original" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/1920px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg" alt="original" height="80" />
-    <div class="container">Loading...</div>
+    <div style="display: flex; flex-direction: row;">
+      <img id="original" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/1920px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg" alt="original" height="360" />
+      <div class="container">Loading...</div>
+    </div>
     <script>
       var htmlTags = []
       var pixelStep = 30;
@@ -17,12 +19,12 @@
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
-        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+        await canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
         const arr = [];
         // console.log('will loop', img.width, img.height, pixelStep);
         for (let h = 1; h <= img.height; h += pixelStep) {
           for (let w = 1; w <= img.width; w += pixelStep) {
-            const pixelData = canvas.getContext('2d').getImageData(w, h, 1, 1).data;
+            const pixelData = await canvas.getContext('2d').getImageData(w, h, 1, 1).data;
             const color = { 
               r: pixelData[0],
               g: pixelData[1],
@@ -46,8 +48,8 @@
           const index = palet.indexOf(color);
           div.style.float = (pixelStep * (index + 1)) % image.width === 0 ? "initial" : "left";
           div.style.display = "block";
-          div.style.height = "2px";
-          div.style.width = "2px";
+          div.style.height = "10px";
+          div.style.width = "10px";
           div.style.backgroundColor = `rgb(${color.r},${color.g},${color.b})`;
           container.appendChild(div);
         });
